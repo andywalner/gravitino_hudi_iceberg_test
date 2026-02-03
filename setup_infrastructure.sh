@@ -84,18 +84,18 @@ curl -s http://localhost:8181/v1/config || echo "Warning: Tabular catalog not re
 echo "Setting up Gravitino..."
 cd /Users/andywalner/random-apps/gravitino_test
 
-if [ ! -d "gravitino-0.8.0-incubating-bin" ]; then
-  echo "Downloading Gravitino..."
-  curl -L -O https://downloads.apache.org/incubator/gravitino/0.8.0-incubating/gravitino-0.8.0-incubating-bin.tar.gz
-  tar -xzf gravitino-0.8.0-incubating-bin.tar.gz
+if [ ! -d "gravitino-1.1.0-bin" ]; then
+  echo "Downloading Gravitino 1.1.0..."
+  curl -L -O https://downloads.apache.org/gravitino/1.1.0/gravitino-1.1.0-bin.tar.gz
+  tar -xzf gravitino-1.1.0-bin.tar.gz
 fi
 
 # Stop if already running
-./gravitino-0.8.0-incubating-bin/bin/gravitino.sh stop 2>/dev/null || true
+./gravitino-1.1.0-bin/bin/gravitino.sh stop 2>/dev/null || true
 sleep 2
 
 # Start Gravitino
-./gravitino-0.8.0-incubating-bin/bin/gravitino.sh start
+./gravitino-1.1.0-bin/bin/gravitino.sh start
 
 # Wait for Gravitino
 echo "Waiting for Gravitino to start..."
@@ -136,18 +136,17 @@ curl -s -X POST http://localhost:8090/api/metalakes/test_metalake/catalogs \
   }' | head -c 200
 echo ""
 
-# 7. Create Hudi catalog (pointing to HMS)
-echo "Creating Hudi catalog in Gravitino..."
+# 7. Create Hive catalog (for Hudi tables in HMS)
+echo "Creating Hive catalog in Gravitino..."
 curl -s -X POST http://localhost:8090/api/metalakes/test_metalake/catalogs \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "hudi_catalog",
+    "name": "hive_catalog",
     "type": "RELATIONAL",
-    "provider": "lakehouse-hudi",
-    "comment": "Hudi via HMS",
+    "provider": "hive",
+    "comment": "Hive Metastore (for Hudi tables)",
     "properties": {
-      "metastore.uris": "thrift://localhost:9083",
-      "warehouse": "file:///tmp/hive-warehouse"
+      "metastore.uris": "thrift://localhost:9083"
     }
   }' | head -c 200
 echo ""
@@ -163,3 +162,7 @@ echo "PostgreSQL:     localhost:5432"
 echo "Hive Metastore: thrift://localhost:9083"
 echo "Tabular REST:   http://localhost:8181"
 echo "Gravitino:      http://localhost:8090"
+echo ""
+echo "Catalogs configured:"
+echo "  - iceberg_catalog -> Tabular REST (lakehouse-iceberg)"
+echo "  - hive_catalog    -> Hive Metastore (hive, for Hudi tables)"
