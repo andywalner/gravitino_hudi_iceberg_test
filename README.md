@@ -75,26 +75,7 @@ Creates:
 - `test_db.sales_iceberg` (Iceberg) - 5 rows of transaction data
 - `test_db.customer_info_hudi` (Hudi CoW) - 5 rows of customer tier data
 
-### 3. Run Federation Test
-
-```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 19)
-export SPARK_HOME=~/Documents/spark-3.5.3-bin-hadoop3
-
-spark-submit \
-  --packages org.apache.gravitino:gravitino-spark-connector-runtime-3.5_2.12:1.1.0,org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.7.1,org.apache.hudi:hudi-spark3.5-bundle_2.12:0.15.0 \
-  --conf spark.plugins=org.apache.gravitino.spark.connector.plugin.GravitinoSparkPlugin \
-  --conf spark.sql.gravitino.uri=http://localhost:8090 \
-  --conf spark.sql.gravitino.metalake=test_metalake \
-  --conf spark.sql.gravitino.enableIcebergSupport=true \
-  --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
-  --conf spark.sql.catalogImplementation=hive \
-  --conf spark.hadoop.hive.metastore.uris=thrift://localhost:9083 \
-  --conf "spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions,org.apache.spark.sql.hudi.HoodieSparkSessionExtension" \
-  test_catalogs.py
-```
-
-### 4. Run in Jupyter Notebook
+### 3. Run test in Jupyter Notebook
 
 ```bash
 jupyter notebook test_federation.ipynb
