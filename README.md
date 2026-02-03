@@ -163,8 +163,7 @@ rm -rf /tmp/iceberg-warehouse /tmp/hive-warehouse
 | `create_iceberg_table.py` | PySpark script to create Iceberg table |
 | `create_hudi_table.py` | PySpark script to create Hudi table in HMS |
 | `test_catalogs.py` | Quick test script for catalog access |
-| `test_federation.py` | Full federation test with joins |
-| `test_federation.ipynb` | Jupyter notebook version |
+| `test_federation.ipynb` | Jupyter notebook federation test with joins |
 
 ## Test Results
 
